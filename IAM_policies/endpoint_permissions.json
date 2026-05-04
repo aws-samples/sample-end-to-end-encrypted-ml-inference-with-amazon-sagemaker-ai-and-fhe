@@ -1,0 +1,96 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:CreateModel"
+            ],
+            "Resource": [
+                "arn:aws:sagemaker:aa-example-1:111122223333:model/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer"
+            ],
+            "Resource": [
+                "arn:aws:ecr:aa-example-1:111122223333:repository/inference-image"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-model-bucket/path/to/model/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-query-bucket/path/to/query/directory/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken"
+            ],
+            "Resource": "*" // Required: GetAuthorizationToken does not support resource-level permissions. See https://docs.aws.amazon.com/AmazonECR/latest/userguide/security_iam_id-based-policy-examples.html
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchGetImage"
+            ],
+            "Resource": [
+                "arn:aws:ecr:aa-example-1:111122223333:repository/inference-image"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-query-bucket"
+            ]
+        },
+        {
+            "Effect": "Deny",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-model-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-query-bucket/*"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": "s3:PutObject",
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-model-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-query-bucket/*"
+            ],
+            "Condition": {
+                "StringNotEquals": {
+                    "s3:x-amz-server-side-encryption": ["AES256", "aws:kms"]
+                }
+            }
+        }
+    ]
+}

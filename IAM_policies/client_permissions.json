@@ -1,0 +1,68 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::amzn-s3-demo-model-bucket/path/to/model.tar.gz"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-query-bucket/path/to/query/directory/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:InvokeEndpoint",
+                "sagemaker:InvokeEndpointAsync"
+            ],
+            "Resource": [
+                "arn:aws:sagemaker:aa-example-1:111122223333:endpoint/example-endpoint"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-query-bucket",
+                "arn:aws:s3:::amzn-s3-demo-model-bucket"
+            ]
+        },
+        {
+            "Effect": "Deny",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-model-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-query-bucket/*"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": "s3:PutObject",
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-model-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-query-bucket/*"
+            ],
+            "Condition": {
+                "StringNotEquals": {
+                    "s3:x-amz-server-side-encryption": ["AES256", "aws:kms"]
+                }
+            }
+        }
+    ]
+}

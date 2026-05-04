@@ -1,0 +1,119 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::amzn-s3-demo-model-bucket/path/to/model.tar.gz"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-script-bucket/path/to/code/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:GetRole",
+                "iam:PassRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::111122223333:role/ModelTrainer"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:CreateTrainingJob",
+                "sagemaker:DescribeTrainingJob"
+            ],
+            "Resource": [
+                "arn:aws:sagemaker:aa-example-1:111122223333:training-job/MNIST-*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGetImage",
+                "ecr:GetDownloadUrlForLayer"
+            ],
+            "Resource": [
+                "arn:aws:ecr:aa-example-1:111122223333:repository/training-image"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken"
+            ],
+            "Resource": "*" // Required: GetAuthorizationToken does not support resource-level permissions. See https://docs.aws.amazon.com/AmazonECR/latest/userguide/security_iam_id-based-policy-examples.html
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+                "ecr:PutImage",
+                "ecr:BatchCheckLayerAvailability"
+            ],
+            "Resource": [
+                "arn:aws:ecr:aa-example-1:111122223333:repository/training-image"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-data-bucket/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-data-bucket"
+            ]
+        },
+        {
+            "Effect": "Deny",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-model-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-script-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-data-bucket/*"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": "s3:PutObject",
+            "Resource": [
+                "arn:aws:s3:::amzn-s3-demo-model-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-script-bucket/*",
+                "arn:aws:s3:::amzn-s3-demo-data-bucket/*"
+            ],
+            "Condition": {
+                "StringNotEquals": {
+                    "s3:x-amz-server-side-encryption": ["AES256", "aws:kms"]
+                }
+            }
+        }
+    ]
+}
