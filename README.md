@@ -1,11 +1,6 @@
-## My Project
+## End to End Encrypted ML Inference with Amazon Sagemaker AI and FHE
 
-TODO: Fill this README out!
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+This project contains sample code for a forthcoming blog post. 
 
 ## Security
 
