@@ -1,3 +1,4 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0boto3==1.37.38
+boto3==1.37.38
 sagemaker==2.243.2
